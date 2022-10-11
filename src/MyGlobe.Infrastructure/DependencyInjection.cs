@@ -12,20 +12,9 @@ namespace MyGlobe.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services,
             IConfiguration configuration)
         {
-            if (true)
-            {
-                services.AddDbContext<ApplicationDbContext>(
-                    o => o.UseInMemoryDatabase(GetInMemoryConnection(configuration))
-                );
-            }
-            else
-            {
-                services.AddDbContext<ApplicationDbContext>(
-                    o => o.UseSqlite(GetSqliteConnection(configuration))
-                );
-            }
-           
-           
+            services.AddDbContext<ApplicationDbContext>(
+                o => o.UseSqlServer(GetSqlConnection(configuration))
+            );
             services.AddScoped<IFacilityRepository, FacilityRepository>();
             services.AddScoped<IPatientRepository, PatientRepository>();
             return services;
@@ -40,6 +29,10 @@ namespace MyGlobe.Infrastructure
         {
             var connectionString = configuration.GetConnectionString("sqliteConnection");
                 return new SqliteConnection(connectionString);
+        }
+        private static string GetSqlConnection(IConfiguration configuration)
+        {
+            return configuration.GetConnectionString("liveConnection");
         }
     }
 }
